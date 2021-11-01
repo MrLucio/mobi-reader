@@ -268,15 +268,15 @@ class Mobi:
     },
   ]
 
-  record_list = []
-
-  pdb_header = {}
-  palm_header = {}
-  mobi_header = {}
-
 
   def __init__(self, path):
     self.file = open(path, 'rb')
+
+    self.record_list = []
+
+    self.pdb_header = {}
+    self.palm_header = {}
+    self.mobi_header = {}
 
 
   def close(self):

@@ -1,8 +1,8 @@
-from type import Type
 from datetime import datetime
-from lz77 import decompress
+from mobi.type import Type
+from mobi.lz77 import decompress
 
-class Reader:
+class Mobi:
 
   pdb_header_fields = [
     {
@@ -277,6 +277,26 @@ class Reader:
 
   def __init__(self, path):
     self.file = open(path, 'rb')
+
+
+  def close(self):
+    self.file.close()
+
+
+  def read(self):
+    self.load_pdb_headers()
+    self.load_record_list()
+    self.load_record0()
+    self.load_mobi_headers()
+
+    output = bytearray()
+
+    record_count = self.palm_header["record_count"]
+
+    for i in range(1, record_count + 1):
+      output += self.read_text_record(i)
+
+    return output
 
 
   def decode_raw_data(self, raw_data, type):

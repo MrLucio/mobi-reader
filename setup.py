@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="mobi-reader",
-    version="0.0.1",
+    version="0.1.0",
     author="MrLucio",
     description="A simple way to read and convert your mobi files.",
     long_description=long_description,

@@ -1,8 +1,10 @@
 # Mobi reader
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MrLucio/mobi-reader/CI)
+![PyPI - License](https://img.shields.io/pypi/l/mobi-reader)
+
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mobi-reader)
 ![PyPI](https://img.shields.io/pypi/v/mobi-reader)
-![PyPI - License](https://img.shields.io/pypi/l/mobi-reader)
 
 ## Installation
 ```

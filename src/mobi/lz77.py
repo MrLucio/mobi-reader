@@ -1,7 +1,7 @@
 # https://en.wikibooks.org/wiki/Data_Compression/Dictionary_compression#PalmDoc
 # https://github.com/woshifyz/mobi_reader/blob/fdd4536c6b42b181342cf248a2b71051b474f7ca/mobi.js#L99
 
-def decompress(data):
+def decompress(data: bytes) -> bytearray:
 	length = len(data)
 	offset = 0
 

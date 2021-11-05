@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import date, datetime
+from typing import Dict, List, Tuple, Union
 from mobi.type import Type
 from mobi.lz77 import decompress
 
@@ -269,7 +270,7 @@ class Mobi:
   ]
 
 
-  def __init__(self, path):
+  def __init__(self, path: str):
     self.file = open(path, 'rb')
 
     self.record_list = []
@@ -279,11 +280,11 @@ class Mobi:
     self.mobi_header = {}
 
 
-  def close(self):
+  def close(self) -> None:
     self.file.close()
 
 
-  def read(self):
+  def read(self) -> bytearray:
     self.load_pdb_headers()
     self.load_record_list()
     self.load_record0()
@@ -299,7 +300,7 @@ class Mobi:
     return output
 
 
-  def decode_raw_data(self, raw_data, type):
+  def decode_raw_data(self, raw_data: bytes, type: Type) -> Union[int, str, datetime, None]:
     value = None
 
     if type == Type.INT:
@@ -313,7 +314,7 @@ class Mobi:
     return value
 
 
-  def load_by_fields(self, fields, target, debug = False):
+  def load_by_fields(self, fields: List[Dict[str]], target: dict) -> None:
     for field in fields:
       name, size, type = field.values()
 
@@ -324,16 +325,14 @@ class Mobi:
         continue
 
       target[name] = value
-    
-      if debug:
-        print(name + ": " + str(value))
 
 
-  def load_pdb_headers(self): # https://en.wikipedia.org/wiki/PDB_(Palm_OS)
+  # https://en.wikipedia.org/wiki/PDB_(Palm_OS)
+  def load_pdb_headers(self) -> None:
     self.load_by_fields(self.pdb_header_fields, self.pdb_header)
 
 
-  def load_record_list(self):
+  def load_record_list(self) -> None:
     for i in range(0, self.pdb_header["num_records"]):
       record = {}
 
@@ -345,17 +344,19 @@ class Mobi:
       self.record_list.append(record)
 
 
-  def load_record0(self):
+  def load_record0(self) -> None:
     self.file.seek(self.record_list[0]["offset"]) # move to first record's offset
 
     self.load_by_fields(self.palm_header_fields, self.palm_header)
 
 
-  def load_mobi_headers(self):
+  def load_mobi_headers(self) -> None:
     self.load_by_fields(self.mobi_header_fields, self.mobi_header)
 
 
-  def get_vlq(self, data): # VLQ = Variable-Length Quantity
+  # VLQ = Variable-Length Quantity
+  @staticmethod
+  def get_vlq(data: bytes) -> Tuple[int, int, int]:
     pos = len(data) - 1
     length = 0
     result = 0
@@ -372,10 +373,10 @@ class Mobi:
       if byte & end or length >= 4:
         break
 
-    return [result, length, pos]
+    return (result, length, pos)
 
 
-  def get_record_extra_size(self, data):
+  def get_record_extra_size(self, data: bytes) -> int:
     pos = len(data) - 1
     extra_flags = self.mobi_header["extra_flags"]
 
@@ -404,7 +405,7 @@ class Mobi:
     return image
 
 
-  def read_text_record(self, index):
+  def read_text_record(self, index: int) -> bytearray:
     start = self.record_list[index]["offset"]
     end =  self.record_list[index + 1]["offset"]
 

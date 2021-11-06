@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="mobi-reader",
-    version="0.1.1",
+    version="0.2.1",
     author="MrLucio",
     description="A simple way to read and convert your mobi files.",
     long_description=long_description,
@@ -14,6 +14,9 @@ setup(
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     python_requires=">=3.4",
+    install_requires=[
+        "lxml>=4.6.4"
+    ],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",

@@ -1,5 +1,8 @@
-from datetime import date, datetime
+from os import path, getcwd, chdir, mkdir
+
+from datetime import datetime
 from typing import Dict, List, Tuple, Union
+from lxml.html import fromstring, tostring
 from mobi.type import Type
 from mobi.lz77 import decompress
 
@@ -300,6 +303,49 @@ class Mobi:
     return output
 
 
+  def to_html(self, with_images : bool = True) -> Union[str, bytes, bytearray]:
+    """
+      Reads mobi file and writes its content to an HTML output file.
+
+      If with_images is True, an img folder is created and the
+      html output file will reference the images in this folder.
+    """
+
+    output = self.read()
+
+    file_name = path.splitext(path.basename(self.file.name))[0] # Strip extension from filename
+
+    if not path.isdir(file_name):
+      mkdir(file_name)
+
+    saved_path = getcwd()
+    chdir(file_name)
+
+    if with_images:
+      root = fromstring(output.decode('utf-8'))
+      x = root.xpath(".//img")
+
+      if not path.isdir("img"):
+        mkdir("img")
+
+      for img in x:
+        recindex = img.get("recindex")
+
+        with open(path.join("img", str(recindex) + '.jpg'), 'wb') as _f_img:
+          _f_img.write(self.read_image(int(recindex)))
+
+        img.set("src", f"img/{recindex}.jpg")
+
+      output = tostring(root)
+
+    with open('output.html', 'wb') as _f_output:
+      _f_output.write(output)
+
+    chdir(saved_path)
+
+    return output
+
+
   def decode_raw_data(self, raw_data: bytes, type: Type) -> Union[int, str, datetime, None]:
     value = None
 
@@ -314,7 +360,7 @@ class Mobi:
     return value
 
 
-  def load_by_fields(self, fields: List[Dict[str]], target: dict) -> None:
+  def load_by_fields(self, fields: List[Dict[str, str]], target: dict) -> None:
     for field in fields:
       name, size, type = field.values()
 

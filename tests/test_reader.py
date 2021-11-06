@@ -5,7 +5,7 @@ from mobi import Mobi
 # Available at: https://www.gutenberg.org/ebooks/11
 def test_book_1():
   reader = Mobi('./alice_in_wonderland.mobi')
-  output = reader.read()  # bytearray containing the decoded mobi file
+  reader.to_html(with_images=True)  # will generate a folder with images and HTML output
   reader.close()
 
 
@@ -13,5 +13,5 @@ def test_book_1():
 # Available at: https://www.gutenberg.org/ebooks/8799
 def test_book_2():
   reader = Mobi('./divine_comedy.mobi')
-  output = reader.read()  # bytearray containing the decoded mobi file
+  reader.to_html(with_images=True)  # will generate a folder with images and HTML output
   reader.close()
